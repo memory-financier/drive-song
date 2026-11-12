@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.egg-info/
+.env
+server/data/
+server/data-*/
+voice-lab/.models/
+
+# Android / Gradle
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+.kotlin/
+captures/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 가족이 직접 녹음한 데모 음성 (공개하지 않음, docs/demo-family-recording.md)
+android/demo-private/
+
+# 시연 영상용 AI 생성 장면 (용량이 커서 올리지 않음, docs/video-ai-prompts.md)
+video-ai/

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 시스템 미디어 UI 에서 보이는 노래 목록 이름 -->
+    <string name="player_library_root">드라이브 송</string>
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 주행 기록 Foreground Service (설계 §2 CPU, §4.1 백그라운드: location 타입) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- 대화 담기 (설계 §8.3): 켰을 때만 microphone 타입을 더한다 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application>
+        <!-- [확인 필요] 설계 §13-4: 주행 중 위치 타입 Foreground Service 를 계속 실행해도 되는가. §13-11: 주행 내내 마이크 -->
+        <service
+            android:name=".TripRecorderService"
+            android:exported="false"
+            android:foregroundServiceType="location|microphone" />
+    </application>
+</manifest>

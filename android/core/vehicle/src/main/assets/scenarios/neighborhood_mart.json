@@ -1,0 +1,17 @@
+{
+  "id": "neighborhood_mart",
+  "name": "동네 마트",
+  "destinationName": "동네 마트",
+  "startLocalTime": "17:30",
+  "parkHoldSec": 360,
+  "points": [
+    {"t": 0, "lat": 37.5, "lng": 127.03, "speedKmh": 0, "gear": "PARK", "label": "집"},
+    {"t": 10, "lat": 37.5, "lng": 127.03, "speedKmh": 0, "gear": "DRIVE", "label": "집 출발"},
+    {"t": 171, "lat": 37.5012, "lng": 127.0335, "speedKmh": 15, "gear": "DRIVE", "label": "골목길"},
+    {"t": 240, "lat": 37.504, "lng": 127.036, "speedKmh": 25, "gear": "DRIVE", "label": "큰길 합류"},
+    {"t": 322, "lat": 37.508, "lng": 127.041, "speedKmh": 30, "gear": "DRIVE", "label": "사거리 신호"},
+    {"t": 407, "lat": 37.513, "lng": 127.047, "speedKmh": 35, "gear": "DRIVE", "label": "대로"},
+    {"t": 480, "lat": 37.516, "lng": 127.052, "speedKmh": 20, "gear": "DRIVE", "label": "마트 앞"},
+    {"t": 527, "lat": 37.5168, "lng": 127.0531, "speedKmh": 0, "gear": "PARK", "label": "마트 주차장"}
+  ]
+}

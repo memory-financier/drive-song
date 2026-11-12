@@ -1,0 +1,44 @@
+{
+  "packageName": "com.drivesong",
+  "appDescription": "Drive Song turns each family drive into a song that plays on arrival and mixes in short voice clips recorded by family members.",
+  "version": "0.1.0",
+  "invokeWord": "드라이브 송",
+  "actionCalls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "PLAY_DRIVE_SONG",
+        "description": "Plays the most recent drive song, followed by the earlier ones.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        },
+        "component": "service"
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "RECORD_FAMILY_VOICE",
+        "description": "Records a five-second voice clip of a registered family member that is mixed into the next drive song.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "nickname": {
+              "type": "string",
+              "description": "The name the family member is registered under in the app, in the user's language."
+            },
+            "slot": {
+              "type": "string",
+              "enum": ["INTRO", "CALL", "OUTRO"],
+              "description": "Where the clip plays: INTRO is a departure greeting, CALL is a cheer after the chorus, OUTRO is an arrival greeting."
+            }
+          },
+          "required": ["nickname"]
+        },
+        "component": "service"
+      }
+    }
+  ]
+}

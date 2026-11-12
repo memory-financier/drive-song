@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="trip_channel_name">주행 기록</string>
+    <string name="trip_notification_title">주행을 기록하고 있어요</string>
+    <string name="trip_notification_text">도착하면 오늘의 드라이브 송을 만들어요</string>
+    <string name="trip_notification_text_conversation">가족 대화를 담고 있어요. 도착하면 가족 목소리 노래를 만들어요</string>
+</resources>

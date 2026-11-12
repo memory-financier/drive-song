@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="library_title">노래 보관함</string>
+    <string name="library_empty">아직 노래가 없어요. 주행이 끝나면 오늘의 노래가 여기에 모여요</string>
+    <string name="library_play">재생</string>
+    <string name="library_show_lyrics">가사 보기</string>
+    <string name="library_hide_lyrics">가사 접기</string>
+    <string name="library_singers">부른 가족: %1$s</string>
+</resources>

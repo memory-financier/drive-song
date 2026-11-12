@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="voice_title">가족·녹음</string>
+    <!-- Gleo 응답 메시지 (설계 §8.2) -->
+    <string name="gleo_playing">드라이브 송을 틀었어요</string>
+    <string name="gleo_paused">노래를 멈췄어요</string>
+    <string name="gleo_no_song">아직 만든 노래가 없어요</string>
+    <string name="gleo_saved">목소리를 녹음했어요. 다음 노래에 들어가요</string>
+    <string name="gleo_who">등록된 가족 호칭으로 다시 말해 주세요</string>
+    <string name="gleo_busy">다른 요청을 처리하고 있어요</string>
+    <string name="gleo_failed">요청을 처리하지 못했어요</string>
+    <string name="voice_clip_mode_title">주행마다 목소리 클립 고르기</string>
+    <string name="voice_clip_mode_random">랜덤</string>
+    <string name="voice_clip_mode_in_order">순서대로</string>
+    <string name="voice_no_members">아직 등록된 가족이 없어요</string>
+    <string name="voice_add_member">가족 추가</string>
+    <string name="voice_child_badge">아이</string>
+    <string name="voice_delete">삭제</string>
+    <string name="voice_cancel">취소</string>
+    <string name="voice_delete_member_title">%1$s 삭제</string>
+    <string name="voice_delete_member_text">녹음한 목소리 클립도 이 기기와 서버에서 모두 삭제돼요.</string>
+
+    <string name="voice_slot_intro">출발 인사 (예: \"출발~!\")</string>
+    <string name="voice_slot_call">응원 한마디 (예: \"아빠 최고!\")</string>
+    <string name="voice_slot_outro">도착 인사 (예: \"도착했다!\")</string>
+    <string name="voice_slot_count">%1$d/%2$d</string>
+    <string name="voice_record">녹음</string>
+    <string name="voice_recording">녹음 중… (최대 5초)</string>
+    <string name="voice_stop">멈춤</string>
+    <string name="voice_preview">미리듣기</string>
+    <string name="voice_save">저장</string>
+    <string name="voice_discard">버리기</string>
+    <string name="voice_clip_play">클립 %1$d 듣기</string>
+    <string name="voice_upload_in_progress">업로드 중</string>
+    <string name="voice_upload_failed">업로드 안 됨</string>
+    <string name="voice_retry">다시 업로드</string>
+
+    <string name="voice_add_title">가족 추가</string>
+    <string name="voice_nickname_title">호칭</string>
+    <string name="voice_child_title">만 14세 미만 아이예요</string>
+    <string name="voice_consent_title">목소리 수집·이용 동의</string>
+    <string name="voice_consent_body">• 수집 항목: 목소리 녹음 (클립당 최대 5초)\n• 이용 목적: 드라이브 송에 목소리 클립을 섞고, \'대화 담기\'에서 누구 목소리인지 알아보는 기준(음성 ID)으로 써요. 클립으로 음성 학습이나 목소리 복제는 하지 않아요 (노래 목소리 변환은 아래 선택 동의).\n• 보관 기간: 직접 삭제할 때까지. 가족을 삭제하면 서버의 클립도 바로 삭제돼요.</string>
+    <string name="voice_consent_check">위 내용을 확인했고 목소리 수집·이용에 동의해요</string>
+    <string name="voice_guardian_check">보호자로서 위 항목(선택한 항목 포함)에 아이 대신 동의해요</string>
+
+    <!-- v0.4 선택 동의 (설계 §8.3) -->
+    <string name="voice_conversation_consent_title">대화 녹음 (선택)</string>
+    <string name="voice_conversation_consent_body">• \'대화 담기\'를 켠 주행에서 이 가족의 말을 녹음하고 받아 적어 가사와 노래 속 한마디에 써요.\n• 대화는 우리 서버에서만 처리하고 외부 AI 서비스로 보내지 않아요. 노래를 만들기 시작하면 원본 대화를 바로 지우고, 받아 적은 글은 저장하지 않아요.</string>
+    <string name="voice_conversation_consent_check">대화 녹음에 동의해요</string>
+    <string name="voice_conversion_consent_title">노래 목소리 변환 (선택)</string>
+    <string name="voice_conversion_consent_body">• 노래 속 가수의 목소리를 이 가족의 목소리로 바꿔 함께 부르게 해요. 그 기준으로 대화 속 목소리(최대 30초)를 보관해요.\n• 우리 가족 노래에만 쓰고 다른 사람의 목소리를 만드는 데 쓰지 않아요. 동의를 끄거나 가족을 삭제하면 바로 지워요.</string>
+    <string name="voice_conversion_consent_check">노래 목소리 변환에 동의해요</string>
+    <string name="voice_consent_conversation_short">대화 녹음 동의</string>
+    <string name="voice_consent_conversion_short">노래 목소리 변환 동의</string>
+    <string name="voice_register">등록</string>
+
+    <string name="voice_error_server">서버에 연결할 수 없어요. 잠시 후 다시 시도해 주세요</string>
+    <string name="voice_error_upload">업로드하지 못했어요. 다시 시도해 주세요</string>
+    <string name="voice_error_microphone">마이크를 사용할 수 없어요</string>
+    <string name="voice_error_permission">마이크 권한이 있어야 녹음할 수 있어요</string>
+    <string name="voice_error_too_short">녹음이 너무 짧아요</string>
+    <string name="voice_error_slot_full">이 슬롯에는 클립을 3개까지 저장할 수 있어요</string>
+    <string name="voice_error_playback">재생할 수 없어요</string>
+
+    <string name="passengers_title">이번 주행 탑승자</string>
+    <string name="passengers_description">함께 타는 가족을 고르면 그 가족의 목소리가 노래에 들어가요. 다음 주행에도 이 선택이 유지돼요.</string>
+    <string name="passengers_empty">먼저 가족을 등록해 주세요</string>
+    <string name="passengers_manage_members">가족 등록하러 가기</string>
+    <string name="passengers_conversation_title">대화 담기 (이번 주행)</string>
+    <string name="passengers_conversation_body">주행 중 가족 대화를 녹음해 가사와 노래에 담아요. 도착 10분 전 노래를 만들기 시작하면 녹음을 멈추고 꺼져요. 언제든 화면 위 배너에서 끌 수 있고, 끄면 그 주행의 대화를 지워요.</string>
+    <string name="passengers_conversation_notice">등록하지 않은 사람이 타면 꺼 주세요</string>
+    <string name="passengers_conversation_need_consent">탑승자 모두가 \'대화 녹음\'에 동의해야 켤 수 있어요 (가족·녹음 화면)</string>
+</resources>

@@ -1,0 +1,49 @@
+[project]
+name = "drive-song-voice-lab"
+version = "0.1.0"
+description = "Drive Song GPU service: conversation analysis and family-voice singing (design 7.5, T16)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "numpy",
+    "soundfile",
+    "librosa>=0.10",
+    # Windows 애플리케이션 제어 정책이 scipy 1.18.1 DLL을 막았다 (docs/conversation-song-trial.md §1)
+    "scipy==1.17.0",
+    "torch==2.7.1",
+    "torchaudio==2.7.1",
+    "transformers>=4.46",
+    "accelerate",
+    "speechbrain>=1.0",
+    "demucs>=4.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "httpx", "pyarrow"]  # pyarrow: eval/trial.py (Zeroth-Korean parquet)
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["voicelab*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+# gpu: 모델을 실제로 올리는 시험 (기본 제외, `-m gpu`)
+markers = ["gpu: loads real models on the GPU (run with -m gpu)"]
+addopts = "-m 'not gpu'"
+
+# PyTorch CUDA 12.8 빌드 (RTX 50 시리즈 sm_120 지원)
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+torchaudio = { index = "pytorch-cu128" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

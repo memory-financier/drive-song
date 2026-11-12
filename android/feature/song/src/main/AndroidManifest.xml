@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 노래 완성(도착 후)·실패 알림 (설계 §7.1). 권한 요청은 주행 기록 시작 시 홈 화면에서 함께 한다 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+</manifest>

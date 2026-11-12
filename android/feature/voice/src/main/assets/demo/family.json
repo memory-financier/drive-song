@@ -1,0 +1,7 @@
+{
+  "members": [
+    {"nickname": "엄마", "isChild": false, "enroll": "enroll_mom.m4a"},
+    {"nickname": "아빠", "isChild": false, "enroll": "enroll_dad.m4a"},
+    {"nickname": "첫째", "isChild": true, "enroll": "enroll_kid.m4a"}
+  ]
+}

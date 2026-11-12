@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  디버그 빌드 전용: -PdriveSongApiBaseUrl=http://<LAN IP>:8000/ 로 실기기(Pleos·폰)에서 PC 개발 서버에 붙을 수 있게
+  평문 HTTP 를 허용한다. 릴리스 빌드는 src/main 설정(10.0.2.2·localhost 외에는 HTTPS)을 쓴다.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

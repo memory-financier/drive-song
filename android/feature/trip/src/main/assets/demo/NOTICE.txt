@@ -1,0 +1,7 @@
+데모 음성 출처 (설계 T19)
+
+Zeroth-Korean (https://github.com/goodatlas/zeroth, Hugging Face kresnik/zeroth_korean)
+라이선스: CC BY 4.0 — Lucas Jo (Atlas Guide), Wonkyum Lee (Gridspace)
+변경: 화자 147(엄마)·118(아빠)·105(첫째)의 발화를 골라 0.6초 간격으로 이어 붙이고(conversation.m4a, 94초),
+등록 클립은 다른 발화를 4.9초로 잘랐다(enroll_*.m4a). 모두 AAC 모노 16kHz 32kbps.
+만드는 스크립트와 고른 발화 id 는 docs/demo-scenario.md 의 "대화 데모" 절.

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 실차 데이터 (설계 §6.1). 런타임 권한 요청은 주행 기록을 시작하는 쪽(T8)에서 한다. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- PERF_VEHICLE_SPEED. AAOS 에서 dangerous(런타임 요청 필요)로 알려져 있음 [확인 필요] -->
+    <uses-permission android:name="android.car.permission.CAR_SPEED" />
+    <!-- GEAR_SELECTION -->
+    <uses-permission android:name="android.car.permission.CAR_POWERTRAIN" />
+    <!-- 도착 조명 연출 (설계 §6.5): Pleos Vehicle SDK Light 조회·제어. 보호 수준 [확인 필요] -->
+    <uses-permission android:name="pleos.car.permission.CAR_LIGHTS" />
+    <uses-permission android:name="pleos.car.permission.CONTROL_CAR_LIGHTS" />
+
+    <application>
+        <!-- required=false: 폰 AVD에도 설치되도록. 없으면 Car* 소스가 대체 동작한다. -->
+        <uses-library
+            android:name="android.car"
+            android:required="false" />
+    </application>
+</manifest>

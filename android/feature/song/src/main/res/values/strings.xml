@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="song_channel_name">노래 생성</string>
+    <string name="song_ready_title">오늘의 드라이브 송이 완성됐어요</string>
+    <string name="song_failed_title">노래를 만들지 못했어요</string>
+    <string name="song_failed_text">네트워크나 서버 상태를 확인해 주세요</string>
+</resources>

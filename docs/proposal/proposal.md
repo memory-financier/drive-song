@@ -180,7 +180,7 @@
 ## 7. 참고자료 (선택 · 가산점)
 
 - 시연 영상: `(링크 기재)` — 4인 가족의 대화가 가족 목소리 노래가 되는 연출 영상 + Pleos 에뮬레이터 실제 앱 화면 (콘티: `docs/video-storyboard.md`)
-- GitHub 저장소: `(링크 기재)` — 차량 앱·서버 소스, release APK(`apk/`), 실행 방법(README)
+- GitHub 저장소: https://github.com/memory-financier/drive-song — 차량 앱·서버 소스, release APK(`apk/`), GPU·API 키 없이 체험하는 실행 방법(README)
 - 앱 화면: `(스크린샷 첨부)` — 홈(주행 중·정차 중), 재생, 보관함, 가족·녹음, 탑승자(대화 담기), 설정
 - 설계 문서: 저장소 `docs/design.md`, 시험 기록 `docs/conversation-song-trial.md`
 

@@ -33,7 +33,8 @@
   - [x] 팀명: **Memory Financier** (11/12). GitHub 조직 `memory-financier` (11/12 이름 비어 있음 확인)
   - [x] 조직·빈 저장소 `memory-financier/drive-song` (본인), PC 경로 정리, release 서명(키는 저장소 밖 `~/.drivesong-keys/`) (11/12)
   - [x] release APK + 새 venv fake 서버로 깨끗한 Pleos 에뮬레이터에서 README 절차 재현: 데모 가족 등록 → 대화 담기 → 서울→강릉 → 도착 순간 자동 재생 (11/12, 시작부터 5분 26초). 설치 직후 첫 실행 화면이 한 번 비어 앱을 다시 열어 해결
-  - [ ] 공개본 올리기: 새 기록 1커밋(작성자 Memory Financier), 공식 양식·채운 DOCX 제외 (양식이 현대차·기아 정보자산 표기)
+  - [x] 공개본 올리기: https://github.com/memory-financier/drive-song (11/12). 새 기록(작성자 Memory Financier, 개인 계정과 연결 안 됨), 공식 양식·채운 DOCX 제외 (양식이 현대차·기아 정보자산 표기). 작업 저장소의 `public-main` 브랜치(워크트리)에서 커밋해 `git push public public-main:main`
+  - [x] 접수양식 7번 칸에 GitHub 주소 (11/12)
   - [ ] 시연 영상 링크를 README·접수양식 7번에
 - [ ] 심사용 서버 공개 주소 (release APK는 HTTPS 서버 필요) [확인 필요]
 

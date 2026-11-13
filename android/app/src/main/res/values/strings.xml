@@ -72,12 +72,12 @@
     <string name="settings_simulation_title">주행 제한 시뮬레이션</string>
     <string name="settings_simulation_description">실제 차량 상태와 관계없이 주행 중 제한 화면으로 동작해요 (테스트용)</string>
     <string name="settings_demo_title">데모 모드</string>
-    <string name="settings_demo_description">가상 주행 시나리오가 차속·기어·위치·경로를 대신해요 (3시간 주행을 약 1분에 재생, 대화 담기를 켜고 재생하면 가족 목소리를 입힐 시간을 두려고 약 4분)</string>
+    <string name="settings_demo_description">가상 주행 시나리오가 차속·기어·위치·경로를 대신해요 (3시간 주행을 약 1분에 재생, 대화 담기를 켜고 재생하면 가족 목소리를 입힐 시간을 두려고 약 9분)</string>
     <string name="settings_demo_play">재생</string>
     <string name="settings_demo_stop">정지</string>
     <string name="settings_demo_playing">재생 중</string>
-    <string name="settings_demo_family_title">데모 가족 (공개 음성)</string>
-    <string name="settings_demo_family_description">엄마·아빠·첫째를 공개 음성 클립과 모든 동의로 등록하고 탑승자로 골라요. 대화 담기를 켜고 서울 → 강릉을 재생하면 데모 대화로 가족 목소리 노래를 만들어요 (음성: Zeroth-Korean, CC BY 4.0)</string>
+    <string name="settings_demo_family_title">데모 가족 (합성 음성)</string>
+    <string name="settings_demo_family_description">엄마·아빠·첫째를 합성 음성 클립과 모든 동의로 등록하고 탑승자로 골라요. 대화 담기를 켜고 서울 → 강릉을 재생하면 데모 대화로 가족 목소리 노래를 만들어요 (가상의 가족 목소리: 공개 음성 Zeroth-Korean, CC BY 4.0 을 본떠 CosyVoice 3 로 합성)</string>
     <string name="settings_demo_family_load">불러오기</string>
     <string name="settings_demo_family_confirm">엄마·아빠·첫째를 데모 목소리로 새로 등록해요. 같은 호칭의 가족과 그 목소리는 지워져요.</string>
     <string name="settings_demo_family_loading">등록하는 중이에요</string>

@@ -18,6 +18,10 @@ import httpx
 
 from app.providers.music.base import STYLE_PROMPTS, MusicResult, MusicStatus, ProviderError, Style
 
+# 가족 목소리로 바꿔 부르기 좋게 리드 보컬 하나가 가사만 또렷하게. 허밍·애드리브·코러스가 있으면
+# 가족 목소리가 가사 대신 그 소리에 쓰인다 (2026-11-12 시험 곡)
+VOCAL_DIRECTION = "single lead vocal singing every lyric line clearly, no humming, no ad-libs, no backing vocals, short intro"
+
 
 class AceStepLocalProvider:
     name = "acestep_local"
@@ -30,7 +34,7 @@ class AceStepLocalProvider:
 
     async def submit(self, lyrics: str, style: str, duration_sec: int) -> str:
         res = await self._client.post(f"{self._base}/release_task", json={
-            "prompt": STYLE_PROMPTS[Style(style)],
+            "prompt": f"{STYLE_PROMPTS[Style(style)]}, {VOCAL_DIRECTION}",
             "lyrics": lyrics,  # [verse]/[chorus] 소문자 태그 그대로
             "audio_duration": duration_sec,
             "vocal_language": "ko",

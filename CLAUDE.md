@@ -122,5 +122,5 @@ cd ~/ai/ACE-Step-1.5 && PYTHONUTF8=1 .venv/Scripts/acestep-api.exe --host 127.0.
 cd voice-lab && uv sync --extra dev && PYTHONUTF8=1 .venv/Scripts/python.exe -m uvicorn voicelab.app:app --port 8002
 .venv/Scripts/python.exe -m pytest -q         # GPU 없이 도는 시험
 # 서버를 위 세 서비스로 (대화 노래 E2E, 설계 §7.5 T17)
-cd server && MUSIC_PROVIDER=acestep_local LLM_PROVIDER=ollama VOICE_PROVIDER=voicelab uvicorn app.main:app --port 8000
+cd server && MUSIC_PROVIDER=acestep_local LLM_PROVIDER=ollama VOICE_PROVIDER=voicelab SONG_CANDIDATES=3 uvicorn app.main:app --port 8000
 ```

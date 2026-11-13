@@ -28,7 +28,7 @@ class DemoChunkRecorderTest {
         recorder.start(file)
         assertTrue(recorder.stop())
 
-        assertTrue(demoBytes.size > 300_000) // 94초 AAC 32kbps
+        assertTrue(demoBytes.size > 300_000) // 86초 AAC 32kbps
         assertArrayEquals(demoBytes, file.readBytes())
         assertEquals(false, recorder.stop()) // 이미 멈춤
     }

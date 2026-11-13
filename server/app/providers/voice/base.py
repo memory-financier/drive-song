@@ -55,11 +55,14 @@ class Sung:
     singers: list[str]  # 실제로 구절을 부른 구성원 id
     # 노래하는 구간 (시작, 끝) 초, 원곡 기준. 믹서가 CALL 한마디를 노래 없는 곳에 넣는다 (§7.4). 모르면 빈 목록
     vocal_phrases: list[tuple[float, float]] = field(default_factory=list)
+    picked: int = 0  # 고른 곡: 0 = song_path, 1 이상 = candidates[picked - 1]
 
 
 class VoiceConverter(Protocol):
     name: str
 
-    async def sing(self, song_path: Path, singers: list[Singer], out_path: Path, work_dir: Path) -> Sung:
-        """AI 가수 노래를 가족 목소리로 바꿔 구절마다 나눠 부르게 한다."""
+    async def sing(self, song_path: Path, singers: list[Singer], out_path: Path, work_dir: Path, *,
+                   candidates: list[Path] = (), lyrics: str | None = None) -> Sung:
+        """AI 가수 노래를 가족 목소리로 바꿔 구절마다 나눠 부르게 한다.
+        candidates(같은 가사의 다른 곡)가 있으면 그 가운데 가장 나은 곡으로 부른다. lyrics 가 있으면 가사 없는 구절은 뺀다."""
         ...

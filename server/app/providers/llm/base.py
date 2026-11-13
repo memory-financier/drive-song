@@ -103,6 +103,7 @@ def build_prompt(inp: LyricsInput) -> str:
 [규칙]
 - 구조: [verse] 4줄 + [chorus] 4줄, 모두 8줄로 끝 (2절·두 번째 후렴·bridge 쓰지 않기)
 - 한 줄 12음절 이내, 쉬운 단어, 아이가 따라 부를 수 있게{talk_rule}
+- 추임새·의성어(랄랄라, 라라라, 나나나, 오오, 우우, 예예) 쓰지 않기. 가족이 한 줄씩 나눠 부르니 모든 줄을 뜻 있는 말로
 - {name_rule}
 - 실존 노래 가사·멜로디 인용 금지
 - 출력은 섹션 태그가 포함된 가사 텍스트만 (설명·제목·코드 펜스 없이)
@@ -119,6 +120,8 @@ OUTPUT_FORMAT = "[출력 형식] 아래 틀 그대로, 태그 2개와 가사 8�
 _TAG = re.compile(r"^\[([A-Za-z]+)(?:\s*\d+)?\]$")
 # 가사 줄에 허용하는 글자: 한글, 영문·숫자·ASCII 문장부호, 자주 쓰는 기호. 그 밖(태국어 등 다른 문자)이 섞이면 재요청
 _FOREIGN = re.compile(r"[^가-힣ᄀ-ᇿ㄰-㆏\x20-\x7E…·~♪♬“”‘’]")
+# 추임새·의성어가 든 줄 (가족 목소리가 가사 대신 "랄랄라"를 부르게 된다, 2026-11-12 시험 곡)
+_FILLER = re.compile(r"[랄라나]{3,}|([오우예])\1|(?i:la\s*){2,}|(?i:na\s*){3,}")
 
 
 def validate_lyrics(text: str) -> str | None:
@@ -126,7 +129,7 @@ def validate_lyrics(text: str) -> str | None:
 
     검사: 첫 줄이 섹션 태그(앞에 설명 문장 없음), 태그 순서 verse/chorus,
     섹션마다 4줄(뒤에 붙은 설명 문장도 여기서 걸린다), 태그가 아닌 [..] 줄이나 ``` 없음,
-    한글·영문 밖의 문자 없음. 음절 수(12음절)는 검사하지 않는다. 전체를 감싼 코드 펜스 한 겹은 벗긴다.
+    한글·영문 밖의 문자 없음, 추임새(랄랄라·오오 등) 없음. 음절 수(12음절)는 검사하지 않는다. 전체를 감싼 코드 펜스 한 겹은 벗긴다.
     """
     lines = [line.strip() for line in text.strip().splitlines() if line.strip()]
     if len(lines) >= 2 and lines[0].startswith("```") and lines[-1] == "```":
@@ -136,7 +139,7 @@ def validate_lyrics(text: str) -> str | None:
         tag = _TAG.match(line)
         if tag:
             sections.append((tag.group(1).lower(), []))
-        elif not sections or line.startswith(("[", "```")) or _FOREIGN.search(line):
+        elif not sections or line.startswith(("[", "```")) or _FOREIGN.search(line) or _FILLER.search(line):
             return None
         else:
             sections[-1][1].append(line)

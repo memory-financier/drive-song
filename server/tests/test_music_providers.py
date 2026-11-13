@@ -11,7 +11,7 @@ import pytest
 
 from app.api.clips import probe_audio_duration
 from app.providers.music.acestep import AceStepProvider
-from app.providers.music.acestep_local import AceStepLocalProvider
+from app.providers.music.acestep_local import VOCAL_DIRECTION, AceStepLocalProvider
 from app.providers.music.base import STYLE_PROMPTS, MusicStatus, ProviderError, Style
 from app.providers.music.factory import make_music_provider
 from app.providers.music.fake import FakeMusicProvider
@@ -167,7 +167,8 @@ def test_acestep_local_submit_request_shape():
 
     body = json.loads(rec.requests[0].content)
     assert body == {
-        "prompt": STYLE_PROMPTS[Style.CITY_POP], "lyrics": LYRICS, "audio_duration": 75, "vocal_language": "ko",
+        "prompt": f"{STYLE_PROMPTS[Style.CITY_POP]}, {VOCAL_DIRECTION}", "lyrics": LYRICS, "audio_duration": 75,
+        "vocal_language": "ko",
         "batch_size": 1, "inference_steps": 12, "thinking": True, "audio_format": "mp3",
     }
 

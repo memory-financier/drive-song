@@ -53,13 +53,15 @@ class VoiceLab:
             ],
         )
 
-    async def sing(self, song_path: Path, singers: list[Singer], out_path: Path, work_dir: Path) -> Sung:
+    async def sing(self, song_path: Path, singers: list[Singer], out_path: Path, work_dir: Path, *,
+                   candidates: list[Path] = (), lyrics: str | None = None) -> Sung:
         data = await self._post("/v1/sing", {
-            "songPath": str(song_path.resolve()),
+            "songPaths": [str(p.resolve()) for p in (song_path, *candidates)],
+            "lyrics": lyrics,
             "singers": [{"memberId": s.member_id, "refPath": str(s.ref_path.resolve()), "refF0Hz": s.ref_f0_hz}
                         for s in singers],
             "outPath": str(out_path.resolve()),
             "workDir": str(work_dir.resolve()),
         })
         return Sung(Path(data["outPath"]), [s["memberId"] for s in data["singers"] if s["phrases"] > 0],
-                    [(s, e) for s, e in data.get("vocalPhrases") or []])
+                    [(s, e) for s, e in data.get("vocalPhrases") or []], data.get("picked") or 0)

@@ -1,7 +1,11 @@
 데모 음성 출처 (설계 T19)
 
-Zeroth-Korean (https://github.com/goodatlas/zeroth, Hugging Face kresnik/zeroth_korean)
+가상의 가족(엄마·아빠·첫째) 목소리다. 실제 사람이 말한 녹음이 아니라 합성 음성(TTS)이다.
+
+목소리 샘플: Zeroth-Korean (https://github.com/goodatlas/zeroth, Hugging Face kresnik/zeroth_korean)
 라이선스: CC BY 4.0 — Lucas Jo (Atlas Guide), Wonkyum Lee (Gridspace)
-변경: 화자 147(엄마)·118(아빠)·105(첫째)의 발화를 골라 0.6초 간격으로 이어 붙이고(conversation.m4a, 94초),
-등록 클립은 다른 발화를 4.9초로 잘랐다(enroll_*.m4a). 모두 AAC 모노 16kHz 32kbps.
-만드는 스크립트와 고른 발화 id 는 docs/demo-scenario.md 의 "대화 데모" 절.
+합성: CosyVoice 3 (FunAudioLLM, Fun-CosyVoice3-0.5B, Apache-2.0)
+변경: 화자 132(엄마)·112(아빠)·121(첫째)의 발화 하나씩을 목소리 샘플로 삼아 가족 대화 대본 23줄을 합성하고 0.6초 간격으로
+이어 붙였다 (conversation.m4a, 86초). 첫째는 샘플의 음높이(+5반음)와 음색(포먼트 1.15배)을 올려 아이 같은 목소리로 만든 뒤
+합성했다. 등록 클립은 자기소개 문장을 합성해 4.9초로 잘랐다 (enroll_*.m4a). 모두 AAC 모노 16kHz 32kbps.
+만드는 스크립트: tools/demo-conversation/make_tts_family.py. 절차와 확인 결과는 docs/demo-scenario.md 의 "대화 데모" 절.

@@ -146,6 +146,7 @@ def test_build_prompt_fills_template():
     assert "가족 호칭 최소 1번 포함" in prompt
     assert "[verse] 4줄 + [chorus] 4줄, 모두 8줄로 끝 (2절·두 번째 후렴·bridge 쓰지 않기)" in prompt
     assert "- 출력은 섹션 태그가 포함된 가사 텍스트만 (설명·제목·코드 펜스 없이)" in prompt
+    assert "추임새·의성어(랄랄라" in prompt
     assert prompt.endswith("태그 2개와 가사 8줄만:\n[verse]\n1줄\n2줄\n3줄\n4줄\n[chorus]\n1줄\n2줄\n3줄\n4줄")
 
 
@@ -171,7 +172,9 @@ def test_validate_lyrics_accepts_and_normalizes():
     assert validate_lyrics(numbered) == VALID
     assert validate_lyrics("```\n" + VALID + "\n```") == VALID  # 전체를 감싼 코드 펜스 한 겹은 벗긴다
     assert validate_lyrics("```text\n" + VALID + "\n```") == VALID
-    assert validate_lyrics(VALID.replace("a1", "랄랄라~ ♪ “바다” 가자!")) == VALID.replace("a1", "랄랄라~ ♪ “바다” 가자!")
+    assert validate_lyrics(VALID.replace("a1", "♪ “바다” 가자~!")) == VALID.replace("a1", "♪ “바다” 가자~!")
+    # 낱말 속 "나라", "오우" 같은 글자는 추임새가 아니다
+    assert validate_lyrics(VALID.replace("a1", "우리나라 바다로 오우 가요")) is not None
 
 
 @pytest.mark.parametrize(
@@ -183,6 +186,9 @@ def test_validate_lyrics_accepts_and_normalizes():
         VALID + "\n[bridge]\nd1\nd2\nd3\nd4",  # 시키지 않은 섹션
         VALID.replace("[chorus]", "[bridge]", 1),  # 다른 태그
         VALID.replace("a4\n", ""),  # 3줄 섹션
+        VALID.replace("b4", "경포해변 달려가요 랄랄라"),  # 추임새 (가족 목소리가 가사 대신 부르게 된다)
+        VALID.replace("a2", "오오 신나는 드라이브"),
+        VALID.replace("a3", "la la la 바다로"),
         "\n".join(VALID.splitlines()[:5]),  # 섹션 1개뿐
         VALID + "\n[verse]\nc1\nc2\nc3\nc4\n[chorus]\nb1\nb2\nb3\nb4",  # 예전 네 섹션 (2절은 60~90초 곡에서 불리지 않음)
         VALID.replace("[verse]", "[verse one]", 1),

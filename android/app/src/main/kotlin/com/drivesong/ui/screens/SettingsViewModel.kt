@@ -63,7 +63,7 @@ class SettingsViewModel @Inject constructor(
     /** 데모 가족 불러오기 상태 (IDLE · DELETING=불러오는 중 · DONE · FAILED). */
     val demoFamilyStatus: StateFlow<DeleteStatus> = _demoFamilyStatus.asStateFlow()
 
-    /** 데모 가족 (T19): 엄마·아빠·첫째를 공개 음성 등록 클립과 모든 동의로 등록하고 탑승자로 고른다. */
+    /** 데모 가족 (T19): 엄마·아빠·첫째를 합성 음성 등록 클립과 모든 동의로 등록하고 탑승자로 고른다. */
     fun loadDemoFamily() {
         if (_demoFamilyStatus.value == DeleteStatus.DELETING) return
         _demoFamilyStatus.value = DeleteStatus.DELETING

@@ -3,8 +3,10 @@
 상태: QUEUED -> [ANALYZING] -> GENERATING -> [CONVERTING] -> MIXING -> READY | FAILED
 - ANALYZING (대화 잡만, §7.5 2~5단계): 대화 분석 -> 가사 -> 한마디·참고 목소리. 분석이 끝나면(실패해도) 원본 대화를
   지운다. 대화가 없거나 분석이 실패하면 주행 정보만으로 가사를 쓴다 (v0.2 흐름). 가사가 두 번 다 실패하면 FAILED.
-- GENERATING: 공급자에 제출하고 완료/실패/제한 시간까지 폴링
-- CONVERTING (부를 사람이 있을 때, §7.5 7~9단계): AI 가수 노래를 가족 목소리로 나눠 부르기. 실패하면 AI 가수 그대로
+- GENERATING: 공급자에 제출하고 완료/실패/제한 시간까지 폴링. 가족이 부를 곡이면 후보를 song_candidates 곡 만든다
+  (공급자 잡 id 를 쉼표로 이어 저장). 후보 가운데 일부가 실패해도 남은 곡으로 계속한다
+- CONVERTING (부를 사람이 있을 때, §7.5 7~9단계): 후보 가운데 한 곡을 골라 가족 목소리로 나눠 부르기.
+  실패하면 첫 후보를 AI 가수 그대로
 - MIXING: 결과 오디오(또는 변환본)를 mix_song() 으로 최종 m4a 로 (clipPlan 클립 + 대화 한마디), songs 행 추가 -> READY
 
 서버 재시작 시: 끝나지 않은 잡은 시작할 때 모두 다시 이어서 처리한다.
@@ -162,17 +164,28 @@ class JobWorker:
 
         provider = self.provider(job.provider)
         if job.provider_job_id is None:
-            provider_job_id = await provider.submit(job.lyrics, job.style, job.duration_sec)
-            job = self._update(job_id, provider_job_id=provider_job_id, submitted_at=utcnow())
+            ids = [await provider.submit(job.lyrics, job.style, job.duration_sec)]
+            for _ in range(self.settings.song_candidates - 1 if job.singers else 0):
+                try:
+                    ids.append(await provider.submit(job.lyrics, job.style, job.duration_sec))
+                except Exception as e:  # 후보는 있으면 좋은 것. 첫 곡만으로 계속한다
+                    log.warning("job %s: could not submit another candidate: %r", job_id, e)
+                    break
+            job = self._update(job_id, provider_job_id=",".join(ids), submitted_at=utcnow())
         deadline = _aware(job.submitted_at) + timedelta(seconds=self.settings.job_timeout_sec)
-        result = await self._wait(provider, job.provider_job_id, deadline)
+        results = await self._wait_all(provider, job.provider_job_id.split(","), deadline)
 
         singers = self._singers(job.singers)
         self._update(job_id, status=CONVERTING if singers else MIXING)
         data_dir = self.settings.data_dir
-        raw = await self._download(result.audio_url, data_dir / "songs" / "raw" / job_id)
+        raws = []
         try:
-            song, sang, phrases = await self._convert(job_id, raw, singers) if singers else (raw, [], [])
+            for i, r in enumerate(results):
+                raws.append(await self._download(
+                    r.audio_url, data_dir / "songs" / "raw" / (f"{job_id}_{i}" if i else job_id)))
+            song, sang, phrases, picked = (
+                await self._convert(job_id, raws, singers, job.lyrics) if singers else (raws[0], [], [], 0))
+            result = results[picked]
             self._update(job_id, status=MIXING, singers=sang)
             song_id = f"song_{secrets.token_hex(8)}"
             rel_path = f"songs/{song_id}.m4a"
@@ -186,7 +199,8 @@ class JobWorker:
                 vocal_phrases=phrases,
             )
         finally:
-            raw.unlink(missing_ok=True)
+            for raw in raws:
+                raw.unlink(missing_ok=True)
 
         try:
             with self.session_factory() as s:
@@ -306,18 +320,35 @@ class JobWorker:
         return singers
 
     async def _convert(
-        self, job_id: str, song: Path, singers: list[Singer],
-    ) -> tuple[Path, list[str], list[tuple[float, float]]]:
-        """(부른 곡, 실제로 부른 구성원, 노래하는 구간). 변환이 실패하면 AI 가수 곡 그대로."""
+        self, job_id: str, songs: list[Path], singers: list[Singer], lyrics: str | None,
+    ) -> tuple[Path, list[str], list[tuple[float, float]], int]:
+        """(부른 곡, 실제로 부른 구성원, 노래하는 구간, 고른 후보 순번). 변환이 실패하면 첫 후보를 AI 가수 그대로."""
         work = self._work_dir(job_id)
         try:
-            sung = await self.converter.sing(song, singers, work / "sung.wav", work / "sing")
+            sung = await self.converter.sing(songs[0], singers, work / "sung.wav", work / "sing",
+                                             candidates=songs[1:], lyrics=lyrics)
         except Exception as e:
             log.warning("job %s: voice conversion failed, using the AI singer: %r", job_id, e)
-            return song, [], []
-        return sung.out_path, sung.singers, sung.vocal_phrases
+            return songs[0], [], [], 0
+        picked = sung.picked if 0 <= sung.picked < len(songs) else 0
+        return sung.out_path, sung.singers, sung.vocal_phrases, picked
 
     # --- 음악 공급자·믹싱 --------------------------------------------------------
+
+    async def _wait_all(
+        self, provider: MusicProvider, provider_job_ids: list[str], deadline: datetime,
+    ) -> list[MusicResult]:
+        """후보 곡을 차례로 기다린다. 하나라도 되면 된 곡들만 돌려주고, 모두 실패하면 마지막 실패를 올린다."""
+        results, failure = [], None
+        for provider_job_id in provider_job_ids:
+            try:
+                results.append(await self._wait(provider, provider_job_id, deadline))
+            except JobFailed as e:
+                log.warning("candidate %s failed: %s", provider_job_id, e)
+                failure = e
+        if not results:
+            raise failure
+        return results
 
     async def _wait(self, provider: MusicProvider, provider_job_id: str, deadline: datetime) -> MusicResult:
         last_error = None

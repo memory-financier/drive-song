@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     # 공급자 상태 폴링 간격과, 제출 시점부터의 생성 제한 시간 (앱 쪽 제한 5분, §7.1·§9)
     job_poll_interval_sec: float = 5.0
     job_timeout_sec: float = 300.0
+    # 가족이 부를 곡(대화 노래)은 후보를 이만큼 만들어 변환 단계가 하나를 고른다 (설계 §7.5 9단계: 보컬이 덜 겹치고
+    # 가사가 덜 빠진 곡). 자체 GPU(acestep_local)면 3 권장 (곡당 약 12초). 유료 공급자는 곡 수만큼 과금된다
+    song_candidates: int = 1
     # fake 공급자가 pending 을 반환하는 시간 (상태 전이 관찰용)
     fake_music_delay_sec: float = 3.0
 

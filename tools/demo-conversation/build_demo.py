@@ -1,4 +1,5 @@
 """T19 데모 대화 만들기: Zeroth-Korean(CC BY 4.0) 화자 3명의 무난한 문장을 번갈아 이어 붙인다.
+(2026-11-13 부터 앱의 데모 자료는 합성 음성 가족이다: make_tts_family.py. 이 스크립트는 이전 자료를 만든 기록이다.)
 
 usage (voice-lab venv: pyarrow·soundfile, ffmpeg 필요):
   ../../voice-lab/.venv/Scripts/python.exe build_demo.py <zeroth test_kresnik.parquet> <out_dir>

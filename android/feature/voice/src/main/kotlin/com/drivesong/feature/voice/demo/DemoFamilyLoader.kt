@@ -17,7 +17,7 @@ import javax.inject.Inject
  * 알아보고 가족이 노래를 나눠 부른다.
  *
  * 가족이 직접 녹음한 데모(`assets/demo-family/`, git 밖 android/demo-private 에서 앱 모듈이 넣음)가 있으면 그것을,
- * 없으면 공개 음성 데모(`assets/demo/`, Zeroth-Korean CC BY 4.0)를 쓴다.
+ * 없으면 합성 음성 데모(`assets/demo/`: 공개 음성 Zeroth-Korean CC BY 4.0 화자를 본떠 CosyVoice 3 로 합성한 가상의 가족)를 쓴다.
  * 같은 호칭의 가족이 있으면 지우고 새로 만든다 (화면에서 확인을 받는다). 서버 오류는 예외 (다시 누르면 처음부터).
  */
 class DemoFamilyLoader @Inject constructor(
@@ -53,7 +53,7 @@ class DemoFamilyLoader @Inject constructor(
         const val FAMILY_DIR = "demo-family"
         const val PUBLIC_DIR = "demo"
 
-        /** 가족이 직접 녹음한 데모가 APK 에 있으면 그 폴더, 아니면 공개 음성 데모. */
+        /** 가족이 직접 녹음한 데모가 APK 에 있으면 그 폴더, 아니면 합성 음성 데모. */
         fun demoDir(context: Context): String =
             if (context.assets.list(FAMILY_DIR)?.contains("family.json") == true) FAMILY_DIR else PUBLIC_DIR
 

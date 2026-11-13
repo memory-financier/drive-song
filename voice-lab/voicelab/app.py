@@ -6,6 +6,7 @@ GPU 는 한 번에 한 작업만 쓴다 (asyncio.Lock).
 """
 
 import asyncio
+import logging
 from dataclasses import asdict
 from pathlib import Path
 
@@ -16,6 +17,10 @@ from pydantic import BaseModel, Field
 from voicelab.analyze import Analyzer
 from voicelab.settings import Settings
 from voicelab.sing import Singer, SingerInput
+
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+log = logging.getLogger(__name__)
 
 
 class MemberIn(BaseModel):
@@ -36,7 +41,9 @@ class SingerIn(BaseModel):
 
 
 class SingRequest(BaseModel):
-    songPath: str
+    songPath: str | None = None
+    songPaths: list[str] = []  # 후보 곡 여럿이면 가장 나은 하나로 부른다. 비면 songPath
+    lyrics: str | None = None  # 있으면 가사 없는 구절을 빼고, 가사가 덜 빠진 후보를 고른다
     singers: list[SingerIn]
     outPath: str
     workDir: str
@@ -61,7 +68,7 @@ def create_app(analyzer=None, singer=None) -> FastAPI:
     settings = Settings()
     app = FastAPI(title="Drive Song voice-lab")
     app.state.analyzer = analyzer or Analyzer(settings)
-    app.state.singer = singer or Singer(settings)
+    app.state.singer = singer or Singer(settings, app.state.analyzer)
     lock = asyncio.Lock()
 
     @app.get("/health")
@@ -84,11 +91,18 @@ def create_app(analyzer=None, singer=None) -> FastAPI:
 
     @app.post("/v1/sing")
     async def sing(req: SingRequest):
-        _require([req.songPath] + [s.refPath for s in req.singers])
+        songs = req.songPaths or ([req.songPath] if req.songPath else [])
+        if not songs:
+            raise HTTPException(422, "songPath or songPaths is required")
+        _require(songs + [s.refPath for s in req.singers])
         async with lock:
             result = await run_in_threadpool(
-                app.state.singer.sing, req.songPath,
-                [SingerInput(s.memberId, s.refPath, s.refF0Hz) for s in req.singers], req.outPath, req.workDir)
+                app.state.singer.sing, songs,
+                [SingerInput(s.memberId, s.refPath, s.refF0Hz) for s in req.singers], req.outPath, req.workDir,
+                req.lyrics)
+        log.info("sing: picked %d of %s, dropped %s, assignment %s", result.picked,
+                 [(c.layered, c.coverage, c.score) for c in result.candidates], result.dropped_phrases,
+                 result.assignment)
         return _camel(asdict(result))
 
     return app

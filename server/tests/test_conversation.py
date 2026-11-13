@@ -368,9 +368,9 @@ def test_statuses_pass_through_analyzing_and_converting(cclient, audio_files, ta
             await asyncio.to_thread(gates["analyze"].wait, 10)
             return await super().analyze(*a)
 
-        async def sing(self, *a):
+        async def sing(self, *a, **kw):
             await asyncio.to_thread(gates["sing"].wait, 10)
-            return await super().sing(*a)
+            return await super().sing(*a, **kw)
 
     voice = GatedVoice()
     use(cclient, analyzer=voice, converter=voice)
@@ -396,10 +396,10 @@ class BrokenVoice(FakeVoice):
             raise httpx.ConnectError("voice-lab down")
         return await super().analyze(*a)
 
-    async def sing(self, *a):
+    async def sing(self, *a, **kw):
         if self.broken["sing"]:
             raise httpx.ReadTimeout("seed-vc stuck")
-        return await super().sing(*a)
+        return await super().sing(*a, **kw)
 
 
 def test_analysis_failure_falls_back_to_trip_lyrics_and_deletes_conversation(cclient, data_dir, audio_files, talk):
@@ -432,8 +432,8 @@ def test_vocal_phrases_reach_the_mixer(cclient, audio_files, talk, monkeypatch):
     ids = family(cclient, h, audio_files)
 
     class PhraseVoice(FakeVoice):
-        async def sing(self, song_path, singers, out_path, work_dir):
-            sung = await super().sing(song_path, singers, out_path, work_dir)
+        async def sing(self, *a, **kw):
+            sung = await super().sing(*a, **kw)
             return Sung(sung.out_path, sung.singers, [(19.5, 23.4)])
 
     seen = []
@@ -450,6 +450,48 @@ def test_vocal_phrases_reach_the_mixer(cclient, audio_files, talk, monkeypatch):
     job_id = cclient.post("/v1/song-jobs", headers=h, json=conv_job(list(ids.values()))).json()["jobId"]
     assert wait_status(cclient, h, job_id, {"READY", "FAILED"})["status"] == "READY"
     assert seen == [[(19.5, 23.4)]]
+
+
+def test_candidate_songs_go_to_the_converter_which_picks_one(make_client, data_dir, audio_files, talk, monkeypatch):
+    """가족이 부를 곡은 후보를 여러 곡 만들고, 변환 단계가 고른 곡으로 믹싱한다 (§7.5 9단계)."""
+    c = make_client(song_candidates=3)
+    h = register(c)
+    ids = family(c, h, audio_files)
+    mixed = []
+
+    def spy_mix(song, clips, chorus_start, chorus_end, out, vocal_phrases=None):
+        mixed.append(song)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_bytes(b"mixed")
+
+    monkeypatch.setattr("app.jobs.worker.mix_song", spy_mix)
+    voice = FakeVoice()
+    use(c, analyzer=voice, converter=voice)
+    put_chunk(c, h, list(ids.values()), talk["long"])
+    job_id = c.post("/v1/song-jobs", headers=h, json=conv_job(list(ids.values()))).json()["jobId"]
+    done = wait_status(c, h, job_id, {"READY", "FAILED"})
+    assert done["status"] == "READY", done
+
+    (song, _, _, _), = voice.sing_calls
+    (options,) = voice.sing_options
+    assert song.stem == job_id and [p.stem for p in options["candidates"]] == [f"{job_id}_1", f"{job_id}_2"]
+    assert options["lyrics"] == done["lyrics"]
+    with c.app.state.session_factory() as s:
+        assert len(s.get(Job, job_id).provider_job_id.split(",")) == 3
+    assert len(mixed) == 1 and mixed[0].parent.name == job_id  # 변환본 (work/<job>/sung.*)
+    assert list((data_dir / "songs" / "raw").iterdir()) == []  # 후보 원곡은 모두 지운다
+
+
+def test_only_one_song_is_made_when_nobody_sings(make_client, audio_files, talk):
+    c = make_client(song_candidates=3)
+    h = register(c)
+    ids = family(c, h, audio_files, voice=())  # 목소리 변환에 동의한 사람이 없다 -> AI 가수가 부른다
+    put_chunk(c, h, list(ids.values()), talk["long"])
+    job_id = c.post("/v1/song-jobs", headers=h, json=conv_job(list(ids.values()))).json()["jobId"]
+    done = wait_status(c, h, job_id, {"READY", "FAILED"})
+    assert done["status"] == "READY" and done["singers"] == []
+    with c.app.state.session_factory() as s:
+        assert "," not in s.get(Job, job_id).provider_job_id
 
 
 def test_no_conversation_uploaded_still_makes_a_song(cclient, audio_files):
@@ -620,7 +662,7 @@ def test_voicelab_request_and_response_mapping(tmp_path):
             "outPath": "C:/w/sung.wav", "durationSec": 60.0, "singerF0Hz": 220.0,
             "singers": [{"memberId": "mem_a", "shiftSemitones": 0, "phrases": 5, "seconds": 30.0},
                         {"memberId": "mem_b", "shiftSemitones": -12, "phrases": 0, "seconds": 0.0}],
-            "vocalPhrases": [[19.5, 23.4], [24.0, 28.1]]})
+            "vocalPhrases": [[19.5, 23.4], [24.0, 28.1]], "picked": 1})
 
     lab = VoiceLab("http://lab:8002", httpx.AsyncClient(transport=httpx.MockTransport(respond)))
     a = asyncio.run(lab.analyze([tmp_path / "c0.m4a"], {"mem_a": [tmp_path / "e.m4a"]}, tmp_path / "out"))
@@ -632,8 +674,11 @@ def test_voicelab_request_and_response_mapping(tmp_path):
     assert a.members[0].ref_f0_hz == 210.5 and a.members[1].moment_path is None
 
     sung = asyncio.run(lab.sing(tmp_path / "s.mp3", [Singer("mem_a", tmp_path / "r.wav", 210.5)],
-                                tmp_path / "sung.wav", tmp_path / "work"))
+                                tmp_path / "sung.wav", tmp_path / "work",
+                                candidates=[tmp_path / "s_1.mp3"], lyrics="[verse]"))
     req = seen["/v1/sing"]
+    assert req["songPaths"] == [str((tmp_path / "s.mp3").resolve()), str((tmp_path / "s_1.mp3").resolve())]
+    assert req["lyrics"] == "[verse]" and sung.picked == 1
     assert req["singers"] == [{"memberId": "mem_a", "refPath": str((tmp_path / "r.wav").resolve()), "refF0Hz": 210.5}]
     assert sung.out_path == Path("C:/w/sung.wav") and sung.singers == ["mem_a"]  # 구절 0개는 부르지 않은 것
     assert sung.vocal_phrases == [(19.5, 23.4), (24.0, 28.1)]

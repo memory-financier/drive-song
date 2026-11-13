@@ -50,8 +50,8 @@ adb install apk/MemoryFinancier_DriveSong_release.apk
 ```
 앱은 `http://10.0.2.2:8000/`(에뮬레이터에서 본 이 PC)의 서버에 접속한다.
 
-**3. 데모 주행** (서울 → 강릉 3시간을 약 5분 30초로 재생, 공개 음성 데모 가족)
-1. **설정** → **데모 모드** 켜기 → **데모 가족 (공개 음성)**의 **불러오기**: 엄마·아빠·첫째가 등록되고 탑승자로 골라진다.
+**3. 데모 주행** (서울 → 강릉 3시간을 약 9분으로 재생, 합성 음성 데모 가족)
+1. **설정** → **데모 모드** 켜기 → **데모 가족 (합성 음성)**의 **불러오기**: 엄마·아빠·첫째가 등록되고 탑승자로 골라진다.
 2. **탑승자** → **대화 담기 (이번 주행)** 켜기 (마이크 권한 허용). 에뮬레이터 마이크 대신 앱에 넣은 데모 대화를 쓴다.
 3. **홈** → **주행 기록 시작** (위치·알림 권한 허용).
 4. **설정** → **서울 → 강릉 (약 3시간)** 재생 → **홈**. 도착 10분 전에 노래 만들기가 시작되고, 도착(P단) 순간 자동 재생된다.
@@ -61,7 +61,7 @@ adb install apk/MemoryFinancier_DriveSong_release.apk
 
 ## 실제 GPU 구성
 
-이 저장소의 측정은 NVIDIA RTX 5070 Ti 16GB 한 장 기준이다 (대화 94초·3명 → 완성 157초).
+이 저장소의 측정은 NVIDIA RTX 5070 Ti 16GB 한 장 기준이다 (대화 86초·3명, 후보 3곡 → 완성 약 3.5분).
 
 1. **ACE-Step 1.5** (작곡, 8001): [ace-step/ACE-Step-1.5](https://github.com/ace-step/ACE-Step-1.5) 설치 후 `acestep-api --host 127.0.0.1 --port 8001`
 2. **Ollama** (가사, 11434): `ollama pull gemma3:12b`
@@ -105,4 +105,4 @@ cd android
 | Demucs | MIT | 보컬 분리 |
 | Seed-VC | GPL-3.0 | 목소리 변환. 이 저장소에 포함하지 않고 별도 프로세스로 실행 |
 
-**데모 음성**: 앱의 데모 가족·데모 대화(`android/feature/*/src/main/assets/demo/`)는 [Zeroth-Korean](https://github.com/goodatlas/zeroth) (CC BY 4.0, Lucas Jo·Wonkyum Lee) 발화를 골라 이어 붙이고 잘라 만들었다. 자세한 것은 `android/feature/trip/src/main/assets/demo/NOTICE.txt`.
+**데모 음성**: 앱의 데모 가족·데모 대화(`android/feature/*/src/main/assets/demo/`)는 가상의 가족 목소리(합성 음성)다. [Zeroth-Korean](https://github.com/goodatlas/zeroth) (CC BY 4.0, Lucas Jo·Wonkyum Lee) 화자 3명의 발화를 목소리 샘플로 삼아 CosyVoice 3 (Apache-2.0)로 가족 대화 대본을 합성했다 (첫째는 샘플의 음높이·음색을 올림). 자세한 것은 `android/feature/trip/src/main/assets/demo/NOTICE.txt`.

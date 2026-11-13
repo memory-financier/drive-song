@@ -22,7 +22,7 @@ android {
 
     // 가족이 직접 녹음한 데모 (T19 A안): git 에 넣지 않는 android/demo-private/assets 가 있으면 APK 에 넣는다
     // (demo-family/: 대화·음성 ID·family.json). 공개 빌드(GitHub·제출 APK)는 이 폴더 없이 만든다
-    // (docs/demo-family-recording.md). 폴더가 없으면 공개 음성 데모(assets/demo/)를 쓴다.
+    // (docs/demo-family-recording.md). 폴더가 없으면 합성 음성 데모(assets/demo/)를 쓴다.
     sourceSets["main"].assets.srcDir("../demo-private/assets")
 }
 

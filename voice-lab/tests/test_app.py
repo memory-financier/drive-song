@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from voicelab.analyze import AnalysisResult, MemberResult, Segment
 from voicelab.app import create_app
-from voicelab.sing import SingerResult, SingResult
+from voicelab.sing import Candidate, SingerResult, SingResult
 
 
 class FakeAnalyzer:
@@ -24,10 +24,11 @@ class FakeSinger:
     def __init__(self):
         self.calls = []
 
-    def sing(self, song, singers, out, work):
-        self.calls.append((song, singers, out, work))
+    def sing(self, songs, singers, out, work, lyrics=None):
+        self.calls.append((songs, singers, out, work, lyrics))
         return SingResult(out, 75.0, 221.0, [SingerResult(s.member_id, -12, 4, 20.5) for s in singers],
-                          [[19.5, 23.4], [24.0, 28.1]])
+                          [[19.5, 23.4], [24.0, 28.1]], picked=len(songs) - 1,
+                          candidates=[Candidate(0.5, 1.0, 0.5)] * len(songs), dropped_phrases=[[1.0, 3.4]])
 
 
 def client(tmp_path):
@@ -77,6 +78,24 @@ def test_sing_passes_singers_and_returns_result(tmp_path):
     assert r.json()["singers"] == [{"memberId": "dad", "shiftSemitones": -12, "phrases": 4, "seconds": 20.5}]
     assert r.json()["vocalPhrases"] == [[19.5, 23.4], [24.0, 28.1]]
     assert singer.calls[0][1][0].ref_f0_hz == 126.0
+    assert singer.calls[0][0] == [str(song)] and singer.calls[0][4] is None
+
+
+def test_sing_takes_candidate_songs_and_lyrics(tmp_path):
+    c, _, singer = client(tmp_path)
+    a, b = tmp_path / "a.mp3", tmp_path / "b.mp3"
+    a.write_bytes(b"x")
+    b.write_bytes(b"x")
+
+    r = c.post("/v1/sing", json={"songPaths": [str(a), str(b)], "lyrics": "[verse]\n바다 보러 가자", "singers": [],
+                                 "outPath": str(tmp_path / "o.wav"), "workDir": str(tmp_path / "w")})
+
+    assert r.status_code == 200
+    assert singer.calls[0][0] == [str(a), str(b)] and singer.calls[0][4] == "[verse]\n바다 보러 가자"
+    body = r.json()
+    assert body["picked"] == 1 and body["droppedPhrases"] == [[1.0, 3.4]]
+    assert body["candidates"] == [{"layered": 0.5, "coverage": 1.0, "score": 0.5}] * 2
+    assert c.post("/v1/sing", json={"singers": [], "outPath": "o", "workDir": "w"}).status_code == 422
 
 
 def test_validation_errors_are_422(tmp_path):

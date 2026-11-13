@@ -16,7 +16,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
-/** T19: 데모 가족 = 엄마·아빠·첫째, 모든 동의, 공개 음성 등록 클립, 이번 주행 탑승자. */
+/** T19: 데모 가족 = 엄마·아빠·첫째, 모든 동의, 합성 음성 등록 클립, 이번 주행 탑승자. */
 @RunWith(RobolectricTestRunner::class)
 class DemoFamilyLoaderTest {
 

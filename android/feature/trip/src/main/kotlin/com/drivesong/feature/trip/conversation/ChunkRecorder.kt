@@ -65,7 +65,7 @@ class MediaRecorderChunkRecorder @Inject constructor(
 /**
  * 데모 모드 (설계 §6.4, T19): 마이크 대신 앱에 넣은 데모 대화를 조각으로 쓴다. 에뮬레이터 마이크는 무음이라
  * 데모에서 가족 목소리 노래를 보여 주려면 필요하다. 가족이 직접 녹음한 대화(`assets/demo-family/`, git 밖
- * android/demo-private 에서 앱 모듈이 넣음)가 있으면 그것을, 없으면 공개 음성 대화(`assets/demo/`, 94초)를 쓴다.
+ * android/demo-private 에서 앱 모듈이 넣음)가 있으면 그것을, 없으면 합성 음성 대화(`assets/demo/`, 86초)를 쓴다.
  * 조각마다 같은 파일을 쓴다: 데모 주행은 노래 생성까지 약 35초라 조각이 하나뿐이다.
  */
 class DemoChunkRecorder @Inject constructor(

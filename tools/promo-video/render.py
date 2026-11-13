@@ -1,4 +1,5 @@
-"""숏폼(세로 1080x1920) 렌더러. 장면 정의는 plan.json, 앱 화면 조각은 clips/*.mp4 (미리 잘라 둔 것).
+"""숏폼(세로 1080x1920)·본편(가로 1920x1080) 렌더러. 장면 정의는 plan.json (size 로 크기),
+앱 화면 조각은 clips/*.mp4 (미리 잘라 둔 것).
 python render.py plan.json out.mp4
 """
 import json
@@ -161,7 +162,9 @@ def level_track(wav_pcm_path, dur):
 
 
 def main(plan_path, out_path):
+    global W, H
     plan = json.loads(Path(plan_path).read_text(encoding="utf-8"))
+    W, H = plan.get("size", (W, H))
     base = Path(plan_path).parent
     total = plan["duration"]
     bg = background()
@@ -200,11 +203,30 @@ def main(plan_path, out_path):
             img = zoom_frame(src, sc.get("z0", full), sc.get("z1", sc.get("z0", full)), p, sc["w"], sc["h"],
                              linear=sc.get("linear", False))
             a = appear(t, sc["start"], sc["end"], fade=sc.get("fade", 0.25))
-            key = (sc["w"], sc["h"])
+            key = (sc["w"], sc["h"], sc.get("radius", 28))
             if key not in masks:
-                masks[key] = rounded_mask(sc["w"], sc["h"], 28)
+                masks[key] = rounded_mask(*key)
             m = masks[key] if a >= 1 else masks[key].point(lambda v, a=a: int(v * a))
             frame.paste(img, (sc["x"], sc["y"]), m)
+        # 1-2) 영상 위 그림자 (위·아래 그라데이션, 자막이 잘 읽히게)
+        for el in plan["elements"]:
+            if el["kind"] != "grad" or not (el["start"] <= t < el["end"]):
+                continue
+            gkey = ("grad", tuple(el["box"]), el["a0"], el["a1"])
+            if gkey not in masks:
+                x0, y0, x1, y1 = el["box"]
+                g = Image.new("RGBA", (x1 - x0, y1 - y0), (*C["bg"], 0))
+                g.putalpha(Image.linear_gradient("L").resize((x1 - x0, y1 - y0)).point(
+                    lambda v, a0=el["a0"], a1=el["a1"]: int(255 * (a0 + (a1 - a0) * v / 255))))
+                masks[gkey] = g
+            g = masks[gkey]
+            a = appear(t, el["start"], el["end"] if el["end"] < total else None)
+            if a < 1:
+                g = g.copy()
+                g.putalpha(g.getchannel("A").point(lambda v, a=a: int(v * a)))
+            frame = frame.convert("RGBA")
+            frame.alpha_composite(g, tuple(el["box"][:2]))
+            frame = frame.convert("RGB")
         # 2) 글·도형
         ov = layer()
         d = ImageDraw.Draw(ov)
@@ -246,7 +268,7 @@ def main(plan_path, out_path):
                         d.text((x + 32, ly), line, font=f, fill=with_alpha(C["text"], a))
             elif k == "wave":
                 bars, bw_, gap = el.get("bars", 28), 14, 12
-                x0 = W / 2 - (bars * (bw_ + gap) - gap) / 2
+                x0 = el.get("cx", W / 2) - (bars * (bw_ + gap) - gap) / 2
                 lv = levels[min(n, len(levels) - 1)]
                 for i in range(bars):
                     phase = abs((i - bars / 2) / (bars / 2))

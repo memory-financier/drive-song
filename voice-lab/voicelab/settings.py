@@ -19,4 +19,6 @@ class Settings(BaseSettings):
     # Seed-VC (GPL-3.0): 우리 코드에서 import 하지 않고 별도 설치본의 CLI 만 부른다
     seedvc_dir: Path = Path.home() / "ai" / "seed-vc"
     seedvc_python: Path = Path.home() / "ai" / "seed-vc" / ".venv" / "Scripts" / "python.exe"
-    seedvc_steps: int = 30
+    # 확산 단계. 30 단계는 반주가 단출한 곡(어쿠스틱)에서 기계음이 들렸다 → 60 (2026-11-13 듣기 비교, 변환 28초 → 40초/명).
+    # 계산 정밀도(fp16 → fp32)는 같은 난수에서 결과 차이가 0.14 dB 뿐이고 시간만 두 배라 fp16 그대로
+    seedvc_steps: int = 60

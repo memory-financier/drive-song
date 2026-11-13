@@ -1,7 +1,7 @@
 """GPU 없이 전체 흐름을 확인하는 대화 분석·변환 (테스트·데모용). ffmpeg 만 쓴다.
 
 - 분석: 구성원마다 고정 문장 하나, 한마디 = 첫 조각 앞 3초, 참고 목소리 = 첫 조각 앞 30초 (대화가 10초 이상일 때)
-- 변환: 노래를 그대로 복사하고 모두가 불렀다고 돌려준다
+- 변환: 노래를 그대로 복사하고 모두가 불렀다고 돌려준다. 후보가 있으면 마지막 후보를 고른다
 """
 
 import asyncio
@@ -29,6 +29,7 @@ class FakeVoice:
     def __init__(self):
         self.analyze_calls: list[tuple] = []
         self.sing_calls: list[tuple] = []
+        self.sing_options: list[dict] = []
 
     async def analyze(self, audio_paths: list[Path], enroll: dict[str, list[Path]], out_dir: Path) -> Analysis:
         self.analyze_calls.append((audio_paths, enroll, out_dir))
@@ -48,9 +49,12 @@ class FakeVoice:
             ))
         return Analysis(round(total, 2), segments, members)
 
-    async def sing(self, song_path: Path, singers: list[Singer], out_path: Path, work_dir: Path) -> Sung:
+    async def sing(self, song_path: Path, singers: list[Singer], out_path: Path, work_dir: Path, *,
+                   candidates: list[Path] = (), lyrics: str | None = None) -> Sung:
         self.sing_calls.append((song_path, singers, out_path, work_dir))
+        self.sing_options.append({"candidates": list(candidates), "lyrics": lyrics})
+        songs = [song_path, *candidates]
         out = out_path.with_suffix(song_path.suffix)
         out.parent.mkdir(parents=True, exist_ok=True)
-        await asyncio.to_thread(shutil.copyfile, song_path, out)
-        return Sung(out, [s.member_id for s in singers])
+        await asyncio.to_thread(shutil.copyfile, songs[-1], out)
+        return Sung(out, [s.member_id for s in singers], picked=len(songs) - 1)

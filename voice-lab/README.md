@@ -25,9 +25,13 @@ uv sync --extra dev                     # PyTorch 2.7.1+cu128 (RTX 50 지원)
   git clone --depth 1 https://github.com/Plachtaa/seed-vc.git ~/ai/seed-vc
   cd ~/ai/seed-vc && uv venv --python 3.10 .venv
   uv pip install --python .venv/Scripts/python.exe "torch==2.7.1+cu128" "torchaudio==2.7.1+cu128" --index-url https://download.pytorch.org/whl/cu128
-  uv pip install --python .venv/Scripts/python.exe accelerate "librosa==0.10.2" "huggingface-hub>=0.28.1" "munch==4.0.0" "einops==0.8.0" "descript-audio-codec==1.0.0" "pydub==0.25.1" "transformers==4.46.3" soundfile "numpy==1.26.4" "hydra-core==1.3.2" pyyaml python-dotenv tqdm "scipy==1.13.1"
+  uv pip install --python .venv/Scripts/python.exe accelerate "librosa==0.10.2" "huggingface-hub>=0.28.1" "munch==4.0.0" "einops==0.8.0" "descript-audio-codec==1.0.0" "pydub==0.25.1" "transformers==4.46.3" soundfile "numpy==1.26.4" "hydra-core==1.3.2" pyyaml python-dotenv tqdm "scipy==1.13.1" "numba==0.60.0" "llvmlite==0.43.0"
   ```
 - Windows 주의: 애플리케이션 제어 정책이 scipy 1.18.1 DLL 을 막아 1.17.0 으로 고정했다. 처음 실행 때 모델(Whisper, ECAPA, Demucs, Seed-VC)을 내려받는다.
+- Windows 스마트 앱 컨트롤 (2026-11-12): 어제까지 되던 Seed-VC 환경의 numba 0.68.1 DLL(`_typeconv`)이 갑자기 막혀
+  목소리 변환이 실패하고 서버가 AI 가수로 대체했다 (`voice conversion failed, using the AI singer`). numba 0.60.0 으로 바꿔 해결:
+  `uv pip install --python .venv/Scripts/python.exe numba==0.60.0 llvmlite==0.43.0`. 같은 날 voice-lab 환경의 numba 0.68.1(목소리 높이 재기 `librosa.pyin`)도 막혀
+  `pyproject.toml` 에 0.67.0 으로 고정했다 (numpy 2.5 지원, 통과). pyarrow 도 막혔다 (데모 대화 만들기에만 쓴다). 막힌 파일은 이벤트 뷰어 `Microsoft-Windows-CodeIntegrity/Operational` 3033 에 나온다. 촬영·시연 전에 노래 하나를 만들어 확인한다.
 
 ## 실행
 
@@ -42,7 +46,7 @@ PYTHONUTF8=1 .venv/Scripts/python.exe -m uvicorn voicelab.app:app --host 127.0.0
 | `VOICELAB_MODELS_DIR` | `.models` | ECAPA 모델 복사 위치 |
 | `VOICELAB_MATCH_THRESHOLD` | `0.45` | 등록 클립과의 유사도가 이보다 낮으면 '모르는 사람' `[확인 필요]` |
 | `VOICELAB_SEEDVC_DIR` / `VOICELAB_SEEDVC_PYTHON` | `~/ai/seed-vc` / 그 `.venv` 의 python | Seed-VC 설치본 |
-| `VOICELAB_SEEDVC_STEPS` | `30` | 확산 단계 |
+| `VOICELAB_SEEDVC_STEPS` | `60` | 확산 단계 (30 은 어쿠스틱처럼 반주가 단출한 곡에서 기계음이 들렸다. 75초 곡 약 40초/명) |
 
 ## API
 

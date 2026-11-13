@@ -135,8 +135,8 @@ class DemoReplayTest {
         player.play(scenario, scenario.startInstant(LocalDate.of(2026, 11, 1), zone), ScenarioPlayer.CONVERSATION_FINALE_SPEED_UP)
 
         val window = requireNotNull(parkedAtMs) - requireNotNull(triggerAtMs)
-        assertTrue(window in 280_000..310_000, "ETA 트리거 → 도착 ${window}ms")
-        assertTrue(currentTime <= 360_000, "전체 재생 ${currentTime}ms") // 6분 안
+        assertTrue(window in 440_000..480_000, "ETA 트리거 → 도착 ${window}ms")
+        assertTrue(currentTime <= 540_000, "전체 재생 ${currentTime}ms") // 9분 안
     }
 
     @Test

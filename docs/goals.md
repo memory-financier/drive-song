@@ -29,9 +29,9 @@
   - 에뮬레이터 실제 화면 녹화를 함께 넣어야 '앱 시연'으로 인정이 확실
   - [x] 본편 v0: 실제 앱 화면 녹화 + 앱이 만든 노래 + 자막, 1920x1080 2분 30초 (`video-ai/out/DriveSong_demo_v0.mp4`, 재료 `video-ai/main-v0/`, 콘티 1-0절) (11/12)
   - [x] 본편 v1: 합성 음성 데모 가족·어쿠스틱·새 앱 빌드로 다시 촬영, 부른 사람 자막은 서버 배정 기록 그대로, 2분 28초 (`video-ai/out/DriveSong_demo_v1.mp4`, 재료 `video-ai/main-v1/`) (11/13)
-  - [ ] 영상 올리기 (예: YouTube 일부 공개) → 링크를 README·접수양식 7번에 (본인)
+  - [x] 영상 올리기 → 링크를 README·접수양식 7번에: https://youtu.be/ISl_q5XDCFs (11/14)
   - [ ] (선택) v1: AI 장면 끼우기, 가족 녹음(A안) 오면 다시 촬영
-- [ ] (선택) 숏폼판: 세로 30~60초, 릴스/쇼츠, #HMG차량용앱개발공모전
+- [x] (선택) 숏폼판: 세로 30~60초, 릴스/쇼츠, #HMG차량용앱개발공모전 → https://youtube.com/shorts/zdrhlAbZZnA (11/14, 접수양식 8번)
   - [x] 숏폼 v1: AI 장면 5개(S3 엠블럼 지움) + 실제 앱 화면 + 앱이 만든 노래, 58초 (`video-ai/out/DriveSong_shortform_v1.mp4`) (11/12)
   - [x] 숏폼 v2: 본편 v1 과 같은 촬영본·노래, 58초 (`video-ai/out/DriveSong_shortform_v2.mp4`) (11/13)
 - [x] 노래 품질 (11/12~13, 설계 §7.2·§7.5 8·9단계): 가사 추임새 금지, 줄 단위로 나눠 부르기, 줄마다 음량 맞추기,
@@ -45,7 +45,7 @@
   - [x] release APK + 새 venv fake 서버로 깨끗한 Pleos 에뮬레이터에서 README 절차 재현: 데모 가족 등록 → 대화 담기 → 서울→강릉 → 도착 순간 자동 재생 (11/12, 시작부터 5분 26초). 설치 직후 첫 실행 화면이 한 번 비어 앱을 다시 열어 해결
   - [x] 공개본 올리기: https://github.com/memory-financier/drive-song (11/12). 새 기록(작성자 Memory Financier, 개인 계정과 연결 안 됨), 공식 양식·채운 DOCX 제외 (양식이 현대차·기아 정보자산 표기). 작업 저장소의 `public-main` 브랜치(워크트리)에서 커밋해 `git push public public-main:main`
   - [x] 접수양식 7번 칸에 GitHub 주소 (11/12)
-  - [ ] 시연 영상 링크를 README·접수양식 7번에
+  - [x] 시연 영상 링크를 README·접수양식 7번에 (11/14)
 - [ ] 심사용 서버 공개 주소 (release APK는 HTTPS 서버 필요) [확인 필요]
 
 ## 4. 완료한 기반 (11/03)

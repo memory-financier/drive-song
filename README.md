@@ -3,7 +3,7 @@
 차 안에서 가족이 나눈 대화가 **가족의 목소리로 부르는 노래**가 되어, 목적지에 도착하는 순간(기어 P) 흘러나오는 Pleos Connect 차량 앱.
 현대자동차그룹 차량용 앱 개발 공모전(Pleos Playground) 출품작 · 팀 Memory Financier.
 
-- 시연 영상: (링크 준비 중)
+- 시연 영상: https://youtu.be/ISl_q5XDCFs (2분 28초) · 숏폼: https://youtube.com/shorts/zdrhlAbZZnA (58초)
 - release APK: `apk/` (Pleos Connect 에뮬레이터용)
 - 설계 문서: [`docs/design.md`](docs/design.md) · 기획서: [`docs/proposal/proposal.md`](docs/proposal/proposal.md)
 
@@ -45,6 +45,8 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000
 `http://127.0.0.1:8000/docs`가 열리면 준비된 것이다.
 
 **2. 앱** (같은 PC에서 Pleos Connect 에뮬레이터 실행)
+
+개발·시험 환경: **Pleos Connect 에뮬레이터 2.1.0** (AVD `Pleos_Connect_v2.1.0`, Android 14 · API 34, Android Automotive, x86_64), 화면 규격 **2560×1440, 160dpi, 가로**. 앱은 분할 화면의 앱 영역(화면 오른쪽 약 2/3, 약 1672×1203)에 표시된다. 앱 패키지 `com.drivesong`, 에뮬레이터 사용자 10. 그 밖에 필요한 설정은 없다 (권한은 앱이 처음 쓸 때 묻는다).
 ```bash
 adb install apk/MemoryFinancier_DriveSong_release.apk
 ```
